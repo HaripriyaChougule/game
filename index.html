@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIC TAC TOA Game</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #030303;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 5px;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="board"></div>
+
+  <script>
+    const board = document.getElementById('board');
+    const cells = [];
+
+    // Initialize the board
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.dataset.index = i;
+      cells.push(cell);
+      board.appendChild(cell);
+
+      cell.addEventListener('click', () => handleClick(i));
+    }
+
+    let currentPlayer = 'X';
+    let winner = null;
+
+    function handleClick(index) {
+      if (winner || cells[index].textContent !== '') return;
+
+      cells[index].textContent = currentPlayer;
+      if (checkWinner()) {
+        winner = currentPlayer;
+        alert(`${winner} is winner...........!`);
+      } else if (isBoardFull()) {
+        alert('It\'s a tie!');
+      } else {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      }
+    }
+
+    function checkWinner() {
+      const winningCombinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+        [0, 4, 8], [2, 4, 6]             // Diagonals
+      ];
+
+      for (const combo of winningCombinations) {
+        const [a, b, c] = combo;
+        if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+          cells[a].style.backgroundColor = cells[b].style.backgroundColor = cells[c].style.backgroundColor = '#87CEEB';
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    function isBoardFull() {
+      return cells.every(cell => cell.textContent !== '');
+    }
+  </script>
+</body>
+</html>
